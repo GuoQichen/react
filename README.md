@@ -146,6 +146,139 @@ setState()可以接受一个函数而不是一个对象, 函数的第一参数�
 - 阻止组件的渲染 => 通过条件判断来实现, 不想在页面上呈现就`return null`
 
 ### List and Keys
+- list items的"key"属性是必须的, "key"是一个字符串属性
+    1. "key"的作用
+帮助React识别哪个item是改变, 增加和删除的, "key"只是给React使用, 不会传递到组件内部
+    2. "key"的要求
+一个在siblings中独特的ID, 常用数据中的ID, 不推荐使用index作为ID, 因为速度慢, 影响性能
+```
+const posts = [
+  {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+  {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+];
+```
+    3. "key"只有在周围有数组的情况下才有意义
+例如, 取出ListItem作为组件, "key"不应在里面的li上, 而是应该在外面ListItem的组件上
+    4. 简单的规则
+可以简单的记住, 在map的回调中, 如果有组件, 就需要"key"
 
+### Forms
+- 类型
+    1. 受控制组件
+已经被提供一个value props, 不维持自己内部数据, 只是单纯的使用props
+        - value
+如果input中指定了固定的value属性, 那么view的input的输入就没办法去修改, 但是可以使用onChange事件改变, event.target.value得到input的lavue, 然后去修改value属性, 这样可以对用户的输入进行限制
+        - issues
+在checkbox和radio中, 为了规范checkbox和radio的输入变化, react监听浏览器的click事件来实现onChange事件,
+大多数情况下是没有问题的, 除了在change事件的事件处理程序中调用preventDefault
+    2. 不受控制组件
+不受控制组件就是没有form提供的value props, 不受控组件不需要通过onChange事件来读取input的vlaue, 可以读取input的value通过DOM的引用
+        - default value
+可以通过设置defaultValue属性在为不受控组件设置初始值, checkbox和radio支持defaultChecked, select支持defaultValue
 
+- 交互的props
+form组件支持一些props通过用户的交互来改变
+    - vlaue, <input>, <textarea>
+    - checked, <input>中type为checkbox和radio
+    - selected, <option>
 
+- 在HTML中, 设置textarea的值通过`<textarea>hello, world</textarea>`, 但是在react中, 通过`<textarea value="helo world" />`来设置
+- 对于<input>和<textarea>, 一般使用onChange
+- onChange也可以简单理解为input改变的回调, 以下几种情况会触发回调
+    - <input>, <textarea>改变value
+    - <input>改变checked状态
+    - <option>改变selected状态
+
+- 晋级话题
+    - 为什么需要受控组件
+为了避免一种情况
+```
+<input type="text" name="title" value="Untitled" />
+```
+初始状态的值是Untitled, 但是如果用户输入后, 节点的value改变了, 但是通过node.getAttribute('value')获得的值还是Untitled, React必须保持状态的一致性, 如果value值是设置的, 那么就应该一直是这种状态
+    - 为什么textarea使用value
+因为已经有了vlaue和defaultValue, 如果在标签中写value显得没有必要, 而且React是在JS中而不是在HTML中, 如果我们想要另起一行没有字符串限制和可以使用`\u `
+    - 为什么select需要value
+在React中, select的value属性可以取代option的selected属性, 非受控组件可以使用defaultValue属性,
+```
+<select value="B">
+  <option value="A">Apple</option>
+  <option value="B">Banana</option>
+  <option value="C">Cranberry</option>
+</select>
+```
+可以通过使用multiple和给value传递一个数组实现选中多个
+-
+
+### Lifting State Up
+有时几个组件需要把改变映射到数据上, 就推荐使用lifting共享的数据到最近的祖先, 如何实现呢, 首先, 我们有一个原则, 不修改props, 其次, 我们需要找到这几个组件最近的祖先, 数据应该被保存在祖先组件的state中, 子组件如果需要修改数据的话, 就调用祖先组件的回调函数, 就像JONP那样, 然后在祖先组件的回调函数中setState, 例如
+```
+<div>
+  <TemperatureInput scale="c" value={celsius} onChange={this.handleCelsiusChange} />
+  <TemperatureInput scale="f" value={fahrenheit} onChange={this.handleFahrenheitChange} />
+  <BoilingVerdict celsius={parseFloat(celsius)} />
+</div>
+```
+- 子组件如何传递数据到祖先组件
+由于子组件是input输入框, 所以监听onChange事件, 一旦数据发生改变, 就调用祖先组件的回调函数处理`e.target.vlaue`, 在祖先组件, 通过setState修改数据, 然后反应到子组件的props中
+```
+handleChange(e) {
+  this.props.onChange(e.target.value);
+}
+```
+
+### Composition vs Inheritance
+React中达到代码的复用最好通过Composition而不是Inheritance
+- 基本思想
+关键在于React中的props, React的组件是接受任意的props, 包括原始类型的值, ReactElement, function, 所以, 在React基本没有用到继承的场景, 都可以通过构造组件来实现
+- props.children
+表示的是组件插入的后代, 是一个数组, 所以可以`{ props.children }`就可以被React自动展开
+```
+function FancyBorder(props) {
+  return (
+    <div className={'FancyBorder FancyBorder-' + props.color}>
+        {props.children}
+    </div>
+  );
+}
+function WelcomeDialog() {
+  return (
+    <FancyBorder color="blue">
+      <h1 className="Dialog-title">Welcome</h1>
+      <p className="Dialog-message">Thank you for visiting our spacecraft!</p>
+    </FancyBorder>
+  );
+}
+```
+- 组件的定制
+通过构造组件的模板, 通过props实现在不同应用场景下的定制
+```
+//给props传递原始类型的值
+function Dialog(props) {
+    return (
+        <div>
+            <h1 className="dialog-title" >{props.title}</h1>
+            <p className="dialog-content" >{props.content}</p>
+        </div>
+    )
+}
+/给props传递ReactElement
+function Title(props) {
+    return <h1>{props.title}</h1>
+}
+function Content(props) {
+    return <p>{props.content}</p>
+}
+function Dialog(props) {
+    return (
+        <div>
+            {props.title}
+            {props.content}
+        </div>
+    )
+}
+ReactDOM.render(
+  <Dialog title={<Title title="Welcome" />} content={<Content content="hello, guoqichen, welcome back" />} />,
+  document.getElementById('root')
+);
+```
