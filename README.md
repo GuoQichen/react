@@ -178,9 +178,9 @@ const posts = [
 
 - 交互的props
 form组件支持一些props通过用户的交互来改变
-    - vlaue, <input>, <textarea>
-    - checked, <input>中type为checkbox和radio
-    - selected, <option>
+    - vlaue, `<input>`, `<textarea>`
+    - checked, `<input>`中type为checkbox和radio
+    - selected, `<option>`
 
 - 在HTML中, 设置textarea的值通过`<textarea>hello, world</textarea>`, 但是在react中, 通过`<textarea value="helo world" />`来设置
 - 对于<input>和<textarea>, 一般使用onChange
