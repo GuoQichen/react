@@ -99,6 +99,7 @@ componentWillUnmount() {} //
 this.state.commit = 'hello' //wrong
 this.setState({commit: 'hello'})//correct
 ```
+
     2. 因为state的更新可能是异步的, 你不应该依赖他们的值计算下一个状态, 所以setState()有另一种用法
 setState()可以接受一个函数而不是一个对象, 函数的第一参数是上一次的state, 第二个参数是那个时间点更新后的props
     3. State更新不是重置而是Merged, 所以可以分开单独去更新
@@ -141,6 +142,7 @@ setState()可以接受一个函数而不是一个对象, 函数的第一参数�
   </h2>
 }
 ```
+
     2. 三元运算符
 
 - 阻止组件的渲染 => 通过条件判断来实现, 不想在页面上呈现就`return null`
@@ -157,6 +159,7 @@ const posts = [
   {id: 2, title: 'Installation', content: 'You can install React from npm.'}
 ];
 ```
+
     3. "key"只有在周围有数组的情况下才有意义
 例如, 取出ListItem作为组件, "key"不应在里面的li上, 而是应该在外面ListItem的组件上
     4. 简单的规则
@@ -183,11 +186,11 @@ form组件支持一些props通过用户的交互来改变
     - selected, `<option>`
 
 - 在HTML中, 设置textarea的值通过`<textarea>hello, world</textarea>`, 但是在react中, 通过`<textarea value="helo world" />`来设置
-- 对于<input>和<textarea>, 一般使用onChange
+- 对于`<input`>和`<textarea>`, 一般使用onChange
 - onChange也可以简单理解为input改变的回调, 以下几种情况会触发回调
-    - <input>, <textarea>改变value
-    - <input>改变checked状态
-    - <option>改变selected状态
+    - `<input>`, `<textarea>`改变value
+    - `<input>`改变checked状态
+    - `<option>`改变selected状态
 
 - 晋级话题
     - 为什么需要受控组件
