@@ -70,23 +70,38 @@
 	var SearchBar = function (_React$Component) {
 	    _inherits(SearchBar, _React$Component);
 	
-	    function SearchBar() {
+	    function SearchBar(props) {
 	        _classCallCheck(this, SearchBar);
 	
-	        return _possibleConstructorReturn(this, (SearchBar.__proto__ || Object.getPrototypeOf(SearchBar)).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, (SearchBar.__proto__ || Object.getPrototypeOf(SearchBar)).call(this, props));
+	
+	        _this.textChange = _this.textChange.bind(_this);
+	        _this.stockChange = _this.stockChange.bind(_this);
+	        return _this;
 	    }
 	
 	    _createClass(SearchBar, [{
+	        key: 'textChange',
+	        value: function textChange(e) {
+	            this.props.textChange(e.target.value);
+	        }
+	    }, {
+	        key: 'stockChange',
+	        value: function stockChange(e) {
+	            this.props.stockChange(this.refs.stock.checked);
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'form',
 	                { method: 'get', action: '/' },
-	                _react2.default.createElement('input', { placeholder: 'Search...' }),
+	                _react2.default.createElement('input', { placeholder: 'Search...', value: this.props.fileterText, onChange: this.textChange }),
+	                _react2.default.createElement('br', null),
 	                _react2.default.createElement(
 	                    'label',
 	                    { htmlFor: 'stock' },
-	                    _react2.default.createElement('input', { type: 'checkbox', id: 'stock' }),
+	                    _react2.default.createElement('input', { type: 'checkbox', id: 'stock', checked: this.props.isStocked, onChange: this.stockChange, ref: 'stock' }),
 	                    'Only show products in stock'
 	                )
 	            );
@@ -105,6 +120,7 @@
 	
 	
 	function ProductsRow(props) {
+	
 	    return _react2.default.createElement(
 	        'li',
 	        null,
@@ -141,18 +157,31 @@
 	    _createClass(ProductsTable, [{
 	        key: 'render',
 	        value: function render() {
+	            var _this3 = this;
+	
+	            var rows = [];
+	            var lastCategory = null;
+	            this.props.data.forEach(function (item) {
+	
+	                if (!item.name.includes(_this3.props.fileterText) || _this3.props.isStocked && !item.stocked) {
+	                    return;
+	                }
+	
+	                if (item.category !== lastCategory) {
+	                    rows.push(_react2.default.createElement(
+	                        'li',
+	                        { className: 'products-category', key: item.category },
+	                        item.category
+	                    ));
+	                    lastCategory = item.category;
+	                }
+	                rows.push(_react2.default.createElement(ProductsRow, { stock: item.stocked, name: item.name, price: item.price, key: item.name }));
+	            });
+	
 	            return _react2.default.createElement(
 	                'ul',
 	                null,
-	                _react2.default.createElement(
-	                    'li',
-	                    null,
-	                    this.props.title
-	                ),
-	                _react2.default.createElement(ProductsRow, {
-	                    stock: this.props.stock,
-	                    name: this.props.name,
-	                    price: this.props.price })
+	                rows
 	            );
 	        }
 	    }]);
@@ -189,12 +218,7 @@
 	                        'price'
 	                    )
 	                ),
-	                _react2.default.createElement(ProductsTable, {
-	                    title: this.props.title,
-	                    stock: this.props.stock,
-	                    name: this.props.name,
-	                    price: this.props.price
-	                })
+	                _react2.default.createElement(ProductsTable, { data: this.props.data, fileterText: this.props.fileterText, isStocked: this.props.isStocked })
 	            );
 	        }
 	    }]);
@@ -205,25 +229,42 @@
 	var Filter = function (_React$Component4) {
 	    _inherits(Filter, _React$Component4);
 	
-	    function Filter() {
+	    function Filter(props) {
 	        _classCallCheck(this, Filter);
 	
-	        return _possibleConstructorReturn(this, (Filter.__proto__ || Object.getPrototypeOf(Filter)).apply(this, arguments));
+	        var _this5 = _possibleConstructorReturn(this, (Filter.__proto__ || Object.getPrototypeOf(Filter)).call(this, props));
+	
+	        _this5.handleText = _this5.handleText.bind(_this5);
+	        _this5.handleStock = _this5.handleStock.bind(_this5);
+	        _this5.state = {
+	            fileterText: '',
+	            isStocked: false
+	        };
+	        return _this5;
 	    }
 	
 	    _createClass(Filter, [{
+	        key: 'handleText',
+	        value: function handleText(str) {
+	            this.setState({
+	                fileterText: str
+	            });
+	        }
+	    }, {
+	        key: 'handleStock',
+	        value: function handleStock(arg) {
+	            this.setState({
+	                isStocked: arg
+	            });
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(SearchBar, null),
-	                _react2.default.createElement(Products, {
-	                    title: this.props.category,
-	                    stock: this.props.stocked,
-	                    name: this.props.name,
-	                    price: this.props.price
-	                })
+	                _react2.default.createElement(SearchBar, { textChange: this.handleText, stockChange: this.handleStock, stocked: this.state.isStocked }),
+	                _react2.default.createElement(Products, { data: data, fileterText: this.state.fileterText, isStocked: this.state.isStocked })
 	            );
 	        }
 	    }]);
@@ -231,23 +272,9 @@
 	    return Filter;
 	}(_react2.default.Component);
 	
-	var data = { category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football" };
+	var data = [{ category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football" }, { category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball" }, { category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball" }, { category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch" }, { category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5" }, { category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7" }];
 	
-	// const data = [
-	//   {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
-	//   {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
-	//   {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
-	//   {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
-	//   {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
-	//   {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
-	// ];
-	
-	_reactDom2.default.render(_react2.default.createElement(Filter, {
-	    title: data.category,
-	    stock: data.stocked,
-	    name: data.name,
-	    price: data.price
-	}), document.getElementById('root'));
+	_reactDom2.default.render(_react2.default.createElement(Filter, { data: data }), document.getElementById('root'));
 
 /***/ },
 /* 1 */

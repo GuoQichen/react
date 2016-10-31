@@ -10,3 +10,11 @@
 .products-title {
     font-weight: bold;
 }
+
+.products-price {
+	margin-left: 2em;
+}
+
+.products-category {
+	font-weight: bolder;
+}
