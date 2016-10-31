@@ -282,3 +282,8 @@ ReactDOM.render(
   document.getElementById('root')
 );
 ```
+
+### Thinking in React
+从构建一个应用来感受React的思想, 一开始提供的只是设计图和JSON数据的API
+1. 把UI分成一个个的模块
+可以把分出来的模块加上不同颜色的边框, 并且做好命名, 分模块的原则基本按照单一职责原则来, 一个模块应该只做一件事, 然后分好模块的层级
