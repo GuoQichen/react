@@ -34,6 +34,7 @@ JSX和React.createElement() => React elements (页面上你想要呈现的元素
 
 ### 渲染元素
 - 'root'DOM, 页面上真实的DOMelement, 里面的内容由ReactDOM来管理
+
     ```
     <div id="root"></div>
     ```
@@ -50,19 +51,19 @@ JSX和React.createElement() => React elements (页面上你想要呈现的元素
     从概念上来理解, component类似于js function, 接受任意的输入(props), 返回一个表示如何出现在屏幕上得React elements
 - 组件的类型, 从React的角度来说两种写法是等价的
     1. Functional
-```
-function Welcome(props) {
-    return <h1>hello, {props.name}</h1>
-}
-```
+        ```
+        function Welcome(props) {
+            return <h1>hello, {props.name}</h1>
+        }
+        ```
     2. Class
-```
-class Welcome extends React.Compontent {
-    render() {
-        return <h1>hello, {this.props.name}</h1>
-    }
-}
-```
+        ```
+        class Welcome extends React.Compontent {
+            render() {
+                return <h1>hello, {this.props.name}</h1>
+            }
+        }
+        ```
 - 当React遇到一个元素表示用户的自定义组件时, 它将把JSX属性作为一个单独的对象传递给component, 这个对象就是props
 - Compontents可以引用其他的Compontents作为返回 => 使我们使用组件抽象任何层次的细节 => 在React中, 任何常见的表达都可以作为组件
 - 小写表示DOM标签, 大写表示Compontent,
@@ -91,11 +92,12 @@ function App() {
 - State和props相似, 但是他是私有的和完全由组件控制的
 - 组件的class写法相对于functionial增加了local state和lifecycle hook
 - lifecycle hook
-Component第一次被渲染到DOM, 称为mounting, 当组件不需要使用的时候, 我们需要移除的时候, 称为unmounting
-```
-componentDidMount() {} //当组件的输出已经被渲染到DOM
-componentWillUnmount() {} //
-```
+
+    Component第一次被渲染到DOM, 称为mounting, 当组件不需要使用的时候, 我们需要移除的时候, 称为unmounting
+    ```
+    componentDidMount() {} //当组件的输出已经被渲染到DOM
+    componentWillUnmount() {} //
+    ```
 - state值得注意的事
     1. 不要直接修改
 
