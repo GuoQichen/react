@@ -1,16 +1,16 @@
 ## QUICK START
 ### 介绍JSX
 - 两种形式, 单行和多行
-```
-//单行
-const element = <h1>hello, world</h1>
-//多行, 使用圆括号, 避免被自动插入分号
-const element = (
-    <h1>
-        hello, {formatName(user)}!
-    </h1>
-)
-```
+    ```
+    //单行
+    const element = <h1>hello, world</h1>
+    //多行, 使用圆括号, 避免被自动插入分号
+    const element = (
+        <h1>
+            hello, {formatName(user)}!
+        </h1>
+    )
+    ```
 - JSX => JS对象 =>
     1. 可以放在if语句中
     2. 可以放在for循环中
@@ -30,11 +30,11 @@ const element = (
 
 - JSX不用担心注入攻击
 - 简单总结
-JSX和React.createElement() => React elements (页面上你想要呈现的元素) => React会解析React elements去构建DOM和呈现最新数据
+
+    JSX和React.createElement() => React elements (页面上你想要呈现的元素) => React会解析React elements去构建DOM和呈现最新数据
 
 ### 渲染元素
 - 'root'DOM, 页面上真实的DOMelement, 里面的内容由ReactDOM来管理
-
     ```
     <div id="root"></div>
     ```
@@ -67,22 +67,22 @@ JSX和React.createElement() => React elements (页面上你想要呈现的元素
 - 当React遇到一个元素表示用户的自定义组件时, 它将把JSX属性作为一个单独的对象传递给component, 这个对象就是props
 - Compontents可以引用其他的Compontents作为返回 => 使我们使用组件抽象任何层次的细节 => 在React中, 任何常见的表达都可以作为组件
 - 小写表示DOM标签, 大写表示Compontent,
-```
-<div />
-<Welcome />
-```
+    ```
+    <div />
+    <Welcome />
+    ```
 - Compontent只能返回单一的root element, 所以多个标签需要使用容器包裹起来
-```
-function App() {
-  return (
-    <div>
-      <Welcome name="James" />
-      <Welcome name="Acky" />
-      <Welcome name="Alex" />
-    </div>
-  )
-}
-```
+    ```
+    function App() {
+    return (
+        <div>
+        <Welcome name="James" />
+        <Welcome name="Acky" />
+        <Welcome name="Alex" />
+        </div>
+    )
+    }
+    ```
 - 当一个UI需要在多个地方重复使用, 就可以抽象成组件, 想象成你拥有一个组件组成的调色盘, 你正在开发的APP是一副画
 - pure和impure  => pure function => ReactComponent必须像pure function那样对待props => props === Read-only
     1. 不改变输入, 同样的输入返回同样的结果就是pure
@@ -100,7 +100,6 @@ function App() {
     ```
 - state值得注意的事
     1. 不要直接修改
-
         ```
         this.state.commit = 'hello' //wrong
         this.setState({commit: 'hello'})//correct
@@ -116,7 +115,6 @@ function App() {
 - 与DOM事件相识, 只是由一些语法上得区别
     1. 使用驼峰命名
     2. 在JSX中, 传递一个函数作为事件的处理程序而不是字符串
-
         ```
         //HTML
         <button onclick="activateLasers()">
@@ -149,7 +147,6 @@ function App() {
         </h2>
         }
         ```
-
     2. 三元运算符
 
 - 阻止组件的渲染 => 通过条件判断来实现, 不想在页面上呈现就`return null`
@@ -343,43 +340,43 @@ React中达到代码的复用最好通过Composition而不是Inheritance
 2. 因为JSX被编译成React.createElement，所以使用JSX必须引用React
 #### Using Dot Notation for JSX Type
 1. 可以在JSX中使用点操作符引用React component，这样做是方便一个单一模块可以export多个React components
-```
-import React from 'react';
-const MyComponents = {
-  DatePicker: function DatePicker(props) {
-    return <div>Imagine a {props.color} datepicker here.</div>;
-  }
-}
-function BlueDatePicker() {
-  return <MyComponents.DatePicker color="blue" />;
-}
-```
+    ```
+    import React from 'react';
+    const MyComponents = {
+    DatePicker: function DatePicker(props) {
+        return <div>Imagine a {props.color} datepicker here.</div>;
+    }
+    }
+    function BlueDatePicker() {
+    return <MyComponents.DatePicker color="blue" />;
+    }
+    ```
 #### User-Defined Components Must Be Capitalized
 1. 自定义组件以大写字母开头，小写字母开头会使用内建组件，例如<div>、<span>，编译后会以字符串'div'、'span'传递到React.createElement
 #### Choosing the Type at Runtime 
 1. 不能使用表达式作为React element类型，如果想要使用表达式指定element类型，必须先赋给一个大写的变量，实际运用中可以根据props渲染不同的组件
-```
-// wrong!!
-const components = {
-  photo: PhotoStory,
-  video: VideoStory
-};
-function Story(props) {
-  // Wrong! JSX type can't be an expression.
-  return <components[props.storyType] story={props.story} />;
-}
-// -------------------------------
-// right!!
-const components = {
-  photo: PhotoStory,
-  video: VideoStory
-};
-function Story(props) {
-  // Correct! JSX type can be a capitalized variable.
-  const SpecificStory = components[props.storyType];
-  return <SpecificStory story={props.story} />;
-}
-```
+    ```
+    // wrong!!
+    const components = {
+    photo: PhotoStory,
+    video: VideoStory
+    };
+    function Story(props) {
+    // Wrong! JSX type can't be an expression.
+    return <components[props.storyType] story={props.story} />;
+    }
+    // -------------------------------
+    // right!!
+    const components = {
+    photo: PhotoStory,
+    video: VideoStory
+    };
+    function Story(props) {
+    // Correct! JSX type can be a capitalized variable.
+    const SpecificStory = components[props.storyType];
+    return <SpecificStory story={props.story} />;
+    }
+    ```
 ### Props in JSX
 在JSX有几种不同的方式指定props
 1. JavaScript Expressions
@@ -447,7 +444,6 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     }
     ```
 5. Booleans, Null, and Undefined Are Ignored 
-
     ```
     // 一样的结果
     <div />
@@ -459,7 +455,6 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     ```
     1. Booleans可以条件渲染React elements，
     2. 但是falsy的值仍然会被渲染出来而不是转换成false，例如0
-
         ```
         // wrong
         <div>
