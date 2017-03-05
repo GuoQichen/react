@@ -43,9 +43,11 @@ JSX和React.createElement() => React elements (页面上你想要呈现的元素
 
 ### Components和props
 - 目的
-把UI切成独立的, 可复用的快, 只需要思考每一块的实现
+
+    把UI切成独立的, 可复用的快, 只需要思考每一块的实现
 - 理解
-从概念上来理解, component类似于js function, 接受任意的输入(props), 返回一个表示如何出现在屏幕上得React elements
+
+    从概念上来理解, component类似于js function, 接受任意的输入(props), 返回一个表示如何出现在屏幕上得React elements
 - 组件的类型, 从React的角度来说两种写法是等价的
     1. Functional
 ```
@@ -96,13 +98,14 @@ componentWillUnmount() {} //
 ```
 - state值得注意的事
     1. 不要直接修改
-```
-this.state.commit = 'hello' //wrong
-this.setState({commit: 'hello'})//correct
-```
 
+        ```
+        this.state.commit = 'hello' //wrong
+        this.setState({commit: 'hello'})//correct
+        ```
     2. 因为state的更新可能是异步的, 你不应该依赖他们的值计算下一个状态, 所以setState()有另一种用法
-setState()可以接受一个函数而不是一个对象, 函数的第一参数是上一次的state, 第二个参数是那个时间点更新后的props
+    
+        setState()可以接受一个函数而不是一个对象, 函数的第一参数是上一次的state, 第二个参数是那个时间点更新后的props
     3. State更新不是重置而是Merged, 所以可以分开单独去更新
 - "top-down", "unidirectional"(单向) data flow
 组件树的数据是自上而下的单向数据流, 可以想象成一个瀑布, 中间不管那个组件需要用到数据, 只要向瀑布中拿就可以, 但是瀑布还是一直向下的, 而且组件也不关心数据是来自父组件的state, proprs还是手动填写, 也无从知道
@@ -112,21 +115,22 @@ setState()可以接受一个函数而不是一个对象, 函数的第一参数�
     1. 使用驼峰命名
     2. 在JSX中, 传递一个函数作为事件的处理程序而不是字符串
 
-```
-//HTML
-<button onclick="activateLasers()">
-  Activate Lasers
-</button>
-//React
-<button onClick={activateLasers}>
-  Activate Lasers
-</button>
-```
+        ```
+        //HTML
+        <button onclick="activateLasers()">
+        Activate Lasers
+        </button>
+        //React
+        <button onClick={activateLasers}>
+        Activate Lasers
+        </button>
+        ```
 - 阻止默认事件必须使用`e.preventDefault()`
 - event对象不是原生的, 是合成过的包含W3C标准的event对象
 - 在React, 一般不需要在DOM元素创建好以后调用addEventListener, add一个监听器到DOM元素上, 而是当DOM初始渲染的时候添加一个listener
 - 使用ES6的语法, 常用的是, 使event handler作为class的一个method
 - JSX回调中的this默认是空的, 所以如果忘记`bind(this)`, 当回调被调用的时候, this就是undefined, 例如event的listener就是一个回调函数, 简单来记就是, 在React中, 如果指向一个方法后面没有(), 就应该`bind(this)`
+
     1. property initializer syntax, 但是还是实验性的写法
     2. arrow function, this的值绑定的是arrow function所在的上下文环境
 但是由一点性能问题, 如果arrow function传给子组件, 子组件可能重复渲染
@@ -136,13 +140,13 @@ setState()可以接受一个函数而不是一个对象, 函数的第一参数�
 - 常见思路, true和false不同的状态分别写两个组件, 根据判断来取决使用哪个组件
 - 简写
     1. 逻辑运算符, &&
-```
-{unreadMessages.length > 0 &&
-  <h2>
-    You have {unreadMessages.length} unread messages.
-  </h2>
-}
-```
+        ```
+        {unreadMessages.length > 0 &&
+        <h2>
+            You have {unreadMessages.length} unread messages.
+        </h2>
+        }
+        ```
 
     2. 三元运算符
 
@@ -151,34 +155,43 @@ setState()可以接受一个函数而不是一个对象, 函数的第一参数�
 ### List and Keys
 - list items的"key"属性是必须的, "key"是一个字符串属性
     1. "key"的作用
-帮助React识别哪个item是改变, 增加和删除的, "key"只是给React使用, 不会传递到组件内部
+
+        帮助React识别哪个item是改变, 增加和删除的, "key"只是给React使用, 不会传递到组件内部
     2. "key"的要求
-一个在siblings中独特的ID, 常用数据中的ID, 不推荐使用index作为ID, 因为速度慢, 影响性能
-```
-const posts = [
-  {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
-  {id: 2, title: 'Installation', content: 'You can install React from npm.'}
-];
-```
+
+        一个在siblings中独特的ID, 常用数据中的ID, 不推荐使用index作为ID, 因为速度慢, 影响性能
+        ```
+        const posts = [
+        {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+        {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+        ];
+        ```
 
     3. "key"只有在周围有数组的情况下才有意义
-例如, 取出ListItem作为组件, "key"不应在里面的li上, 而是应该在外面ListItem的组件上
+
+        例如, 取出ListItem作为组件, "key"不应在里面的li上, 而是应该在外面ListItem的组件上
     4. 简单的规则
-可以简单的记住, 在map的回调中, 如果有组件, 就需要"key"
+
+        可以简单的记住, 在map的回调中, 如果有组件, 就需要"key"
 
 ### Forms
 - 类型
     1. 受控制组件
-已经被提供一个value props, 不维持自己内部数据, 只是单纯的使用props
+
+        已经被提供一个value props, 不维持自己内部数据, 只是单纯的使用props
         - value
-如果input中指定了固定的value属性, 那么view的input的输入就没办法去修改, 但是可以使用onChange事件改变, event.target.value得到input的lavue, 然后去修改value属性, 这样可以对用户的输入进行限制
+
+            如果input中指定了固定的value属性, 那么view的input的输入就没办法去修改, 但是可以使用onChange事件改变, event.target.value得到input的lavue, 然后去修改value属性, 这样可以对用户的输入进行限制
         - issues
-在checkbox和radio中, 为了规范checkbox和radio的输入变化, react监听浏览器的click事件来实现onChange事件,
-大多数情况下是没有问题的, 除了在change事件的事件处理程序中调用preventDefault
+
+            在checkbox和radio中, 为了规范checkbox和radio的输入变化, react监听浏览器的click事件来实现onChange事件,
+            大多数情况下是没有问题的, 除了在change事件的事件处理程序中调用preventDefault
     2. 不受控制组件
-不受控制组件就是没有form提供的value props, 不受控组件不需要通过onChange事件来读取input的vlaue, 可以读取input的value通过DOM的引用
+
+        不受控制组件就是没有form提供的value props, 不受控组件不需要通过onChange事件来读取input的vlaue, 可以读取input的value通过DOM的引用
         - default value
-可以通过设置defaultValue属性在为不受控组件设置初始值, checkbox和radio支持defaultChecked, select支持defaultValue
+
+            可以通过设置defaultValue属性在为不受控组件设置初始值, checkbox和radio支持defaultChecked, select支持defaultValue
 
 - 交互的props
 
@@ -197,27 +210,27 @@ const posts = [
 - 晋级话题
     - 为什么需要受控组件
 
-    为了避免一种情况
-    ```
-    <input type="text" name="title" value="Untitled" />
-    ```
-    初始状态的值是Untitled, 但是如果用户输入后, 节点的value改变了, 但是通过node.getAttribute('value')获得的值还是Untitled, React必须保持状态的一致性, 如果value值是设置的, 那么就应该一直是这种状态
+        为了避免一种情况
+        ```
+        <input type="text" name="title" value="Untitled" />
+        ```
+        初始状态的值是Untitled, 但是如果用户输入后, 节点的value改变了, 但是通过node.getAttribute('value')获得的值还是Untitled, React必须保持状态的一致性, 如果value值是设置的, 那么就应该一直是这种状态
 
     - 为什么textarea使用value
 
-    因为已经有了vlaue和defaultValue, 如果在标签中写value显得没有必要, 而且React是在JS中而不是在HTML中, 如果我们想要另起一行没有字符串限制和可以使用`\u `
+        因为已经有了vlaue和defaultValue, 如果在标签中写value显得没有必要, 而且React是在JS中而不是在HTML中, 如果我们想要另起一行没有字符串限制和可以使用`\u `
 
     - 为什么select需要value
 
-    在React中, select的value属性可以取代option的selected属性, 非受控组件可以使用defaultValue属性,
-    ```
-    <select value="B">
-    <option value="A">Apple</option>
-    <option value="B">Banana</option>
-    <option value="C">Cranberry</option>
-    </select>
-    ```
-    可以通过使用multiple和给value传递一个数组实现选中多个
+        在React中, select的value属性可以取代option的selected属性, 非受控组件可以使用defaultValue属性,
+        ```
+        <select value="B">
+        <option value="A">Apple</option>
+        <option value="B">Banana</option>
+        <option value="C">Cranberry</option>
+        </select>
+        ```
+        可以通过使用multiple和给value传递一个数组实现选中多个
 
 ### Lifting State Up
 有时几个组件需要把改变映射到数据上, 就推荐使用lifting共享的数据到最近的祖先, 如何实现呢, 首先, 我们有一个原则, 不修改props, 其次, 我们需要找到这几个组件最近的祖先, 数据应该被保存在祖先组件的state中, 子组件如果需要修改数据的话, 就调用祖先组件的回调函数, 就像JONP那样, 然后在祖先组件的回调函数中setState, 例如
@@ -231,11 +244,11 @@ const posts = [
 - 子组件如何传递数据到祖先组件
 
     由于子组件是input输入框, 所以监听onChange事件, 一旦数据发生改变, 就调用祖先组件的回调函数处理`e.target.vlaue`, 在祖先组件, 通过setState修改数据, 然后反应到子组件的props中
-```
-handleChange(e) {
-  this.props.onChange(e.target.value);
-}
-```
+    ```
+    handleChange(e) {
+    this.props.onChange(e.target.value);
+    }
+    ```
 
 ### Composition vs Inheritance
 React中达到代码的复用最好通过Composition而不是Inheritance
@@ -245,55 +258,56 @@ React中达到代码的复用最好通过Composition而不是Inheritance
 - props.children
 
     表示的是组件插入的后代, 是一个数组, 所以可以`{ props.children }`就可以被React自动展开
-```
-function FancyBorder(props) {
-  return (
-    <div className={'FancyBorder FancyBorder-' + props.color}>
-        {props.children}
-    </div>
-  );
-}
-function WelcomeDialog() {
-  return (
-    <FancyBorder color="blue">
-      <h1 className="Dialog-title">Welcome</h1>
-      <p className="Dialog-message">Thank you for visiting our spacecraft!</p>
-    </FancyBorder>
-  );
-}
-```
+    ```
+    function FancyBorder(props) {
+    return (
+        <div className={'FancyBorder FancyBorder-' + props.color}>
+            {props.children}
+        </div>
+    );
+    }
+    function WelcomeDialog() {
+    return (
+        <FancyBorder color="blue">
+        <h1 className="Dialog-title">Welcome</h1>
+        <p className="Dialog-message">Thank you for visiting our spacecraft!</p>
+        </FancyBorder>
+    );
+    }
+    ```
 - 组件的定制
-通过构造组件的模板, 通过props实现在不同应用场景下的定制
-```
-//给props传递原始类型的值
-function Dialog(props) {
-    return (
-        <div>
-            <h1 className="dialog-title" >{props.title}</h1>
-            <p className="dialog-content" >{props.content}</p>
-        </div>
-    )
-}
-/给props传递ReactElement
-function Title(props) {
-    return <h1>{props.title}</h1>
-}
-function Content(props) {
-    return <p>{props.content}</p>
-}
-function Dialog(props) {
-    return (
-        <div>
-            {props.title}
-            {props.content}
-        </div>
-    )
-}
-ReactDOM.render(
-  <Dialog title={<Title title="Welcome" />} content={<Content content="hello, guoqichen, welcome back" />} />,
-  document.getElementById('root')
-);
-```
+
+    通过构造组件的模板, 通过props实现在不同应用场景下的定制
+    ```
+    //给props传递原始类型的值
+    function Dialog(props) {
+        return (
+            <div>
+                <h1 className="dialog-title" >{props.title}</h1>
+                <p className="dialog-content" >{props.content}</p>
+            </div>
+        )
+    }
+    /给props传递ReactElement
+    function Title(props) {
+        return <h1>{props.title}</h1>
+    }
+    function Content(props) {
+        return <p>{props.content}</p>
+    }
+    function Dialog(props) {
+        return (
+            <div>
+                {props.title}
+                {props.content}
+            </div>
+        )
+    }
+    ReactDOM.render(
+    <Dialog title={<Title title="Welcome" />} content={<Content content="hello, guoqichen, welcome back" />} />,
+    document.getElementById('root')
+    );
+    ```
 
 ### Thinking in React
 从构建一个应用来感受React的思想, 一开始提供的只是设计图和JSON数据的API
