@@ -34,9 +34,9 @@ JSX和React.createElement() => React elements (页面上你想要呈现的元素
 
 ### 渲染元素
 - 'root'DOM, 页面上真实的DOMelement, 里面的内容由ReactDOM来管理
-```
-<div id="root"></div>
-```
+    ```
+    <div id="root"></div>
+    ```
 - 把React element渲染成rootDOM的节点, 使用`ReactDOM.render()`
 - React elements是一个一旦创建就不可变的对象, 表示某个时间点的UI状态, 例如电影中某个点得关键帧, 所以更新UI只能创建新的element
 - React元素只会更新需要的部分
