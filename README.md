@@ -1,3 +1,4 @@
+## QUICK START
 ### 介绍JSX
 - 两种形式, 单行和多行
 ```
@@ -305,3 +306,141 @@ ReactDOM.render(
 
 5. 添加反向数据流
 子组件引起state的变化, 具体实现是调用保存state组件的回调函数
+
+## ADVANCED GUIDES
+### Specifying The React Element Type
+1. React element编译后会直接引用已经命名后的变量，例如使用JSX<Foo />表达式，Foo必须在作用域当中
+2. 因为JSX被编译成React.createElement，所以使用JSX必须引用React
+#### Using Dot Notation for JSX Type
+1. 可以在JSX中使用点操作符引用React component，这样做是方便一个单一模块可以export多个React components
+```
+import React from 'react';
+const MyComponents = {
+  DatePicker: function DatePicker(props) {
+    return <div>Imagine a {props.color} datepicker here.</div>;
+  }
+}
+function BlueDatePicker() {
+  return <MyComponents.DatePicker color="blue" />;
+}
+```
+#### User-Defined Components Must Be Capitalized
+1. 自定义组件以大写字母开头，小写字母开头会使用内建组件，例如<div>、<span>，编译后会以字符串'div'、'span'传递到React.createElement
+#### Choosing the Type at Runtime 
+1. 不能使用表达式作为React element类型，如果想要使用表达式指定element类型，必须先赋给一个大写的变量，实际运用中可以根据props渲染不同的组件
+```
+// wrong!!
+const components = {
+  photo: PhotoStory,
+  video: VideoStory
+};
+function Story(props) {
+  // Wrong! JSX type can't be an expression.
+  return <components[props.storyType] story={props.story} />;
+}
+// -------------------------------
+// right!!
+const components = {
+  photo: PhotoStory,
+  video: VideoStory
+};
+function Story(props) {
+  // Correct! JSX type can be a capitalized variable.
+  const SpecificStory = components[props.storyType];
+  return <SpecificStory story={props.story} />;
+}
+```
+### Props in JSX
+在JSX有几种不同的方式指定props
+1. JavaScript Expressions
+    
+    `<MyComponent foo={1 + 2 + 3 + 4} />`，传递进MyComponent组件的props.foo会是计算过的10，注意，`if`语句和`for`循环不是JS表达式，所以不能直接在JSX中使用，而是在JSX附近的代码中使用
+    ```
+    function NumberDescriber(props) {
+        let description;
+        if (props.number % 2 == 0) {
+            description = <strong>even</strong>;
+        } else {
+            description = <i>odd</i>;
+        }
+        return <div>{props.number} is an {description} number</div>;
+    }
+    ```
+2. String Literals
+3. Props Default to "True" 
+    
+    如果一个props没有值，那它的默认值是true，这样的行为是为了和HTML保持一致
+    ```
+    // 以下两个表达式是相等的
+    <MyTextBox autocomplete />
+    <MyTextBox autocomplete={true} />
+    ```
+    但是，不推荐使用这个写法，容易和ES6的对象属性简写混淆，`{foo}`是`{foo:foo}`的简写而不是`{foo:true}`
+4. Spread Attributes
+
+    如果已经有了一个props对象想要传递进JSX，可以使用`...`spread操作符传递整个对象
+    ```
+    // 以下两个表达式是相等的
+    function App1() {
+        return <Greeting firstName="Ben" lastName="Hector" />;
+    }
+    // ... spread operator
+    function App2() {
+        const props = {firstName: 'Ben', lastName: 'Hector'};
+        return <Greeting {...props} />;
+    }
+    ```
+    如果多个组件需要同样的props容器，可以使用`...`spread操作符传递同样的props，但是有可能传递一些不相干的属性，所以需要根据实际情况来使用
+### Children in JSX
+JSX表达式包含一个开标签和闭标签，这些标签的内容被传递到特殊的props，`props.children`
+
+1. String Literals
+
+    HTML是未转义的，所以可以和写HTML一样写JSX的String Literals，还有JSX标签中的前后的空格和新的一行会被省略，String Literals中的多个空格会被当成一个
+2. JSX Children 
+
+    可以用来显示嵌套组件
+3. JavaScript Expressions
+4. Functions as Children
+
+    `props.children`和`props`一样，可以接受任何数据类型，包括函数，所以可以给`props.children`指定一个回调函数
+    ```
+    function Parent(props) {
+        return <div>{props.children('hello')}</div>
+    }
+    function Foo() {
+        return (
+            <Parent>
+                {(param)=><div>{param}</div>}
+            </Parent>
+        )
+    }
+    ```
+5. Booleans, Null, and Undefined Are Ignored 
+
+    ```
+    // 一样的结果
+    <div />
+    <div></div>
+    <div>{false}</div>
+    <div>{null}</div>
+    <div>{undefined}</div>
+    <div>{true}</div>
+    ```
+    1. Booleans可以条件渲染React elements，
+    2. 但是falsy的值仍然会被渲染出来而不是转换成false，例如0
+
+        ```
+        // wrong
+        <div>
+        {props.messages.length &&
+            <MessageList messages={props.messages} />
+        }
+        </div> 
+        // right
+        <div>
+        {props.messages.length > 0 &&
+            <MessageList messages={props.messages} />
+        }
+        </div>
+        ```
