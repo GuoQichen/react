@@ -181,7 +181,8 @@ const posts = [
 可以通过设置defaultValue属性在为不受控组件设置初始值, checkbox和radio支持defaultChecked, select支持defaultValue
 
 - 交互的props
-form组件支持一些props通过用户的交互来改变
+
+    form组件支持一些props通过用户的交互来改变
     - vlaue, `<input>`, `<textarea>`
     - checked, `<input>`中type为checkbox和radio
     - selected, `<option>`
@@ -195,23 +196,28 @@ form组件支持一些props通过用户的交互来改变
 
 - 晋级话题
     - 为什么需要受控组件
-为了避免一种情况
-```
-<input type="text" name="title" value="Untitled" />
-```
-初始状态的值是Untitled, 但是如果用户输入后, 节点的value改变了, 但是通过node.getAttribute('value')获得的值还是Untitled, React必须保持状态的一致性, 如果value值是设置的, 那么就应该一直是这种状态
+
+    为了避免一种情况
+    ```
+    <input type="text" name="title" value="Untitled" />
+    ```
+    初始状态的值是Untitled, 但是如果用户输入后, 节点的value改变了, 但是通过node.getAttribute('value')获得的值还是Untitled, React必须保持状态的一致性, 如果value值是设置的, 那么就应该一直是这种状态
+
     - 为什么textarea使用value
-因为已经有了vlaue和defaultValue, 如果在标签中写value显得没有必要, 而且React是在JS中而不是在HTML中, 如果我们想要另起一行没有字符串限制和可以使用`\u `
+
+    因为已经有了vlaue和defaultValue, 如果在标签中写value显得没有必要, 而且React是在JS中而不是在HTML中, 如果我们想要另起一行没有字符串限制和可以使用`\u `
+
     - 为什么select需要value
-在React中, select的value属性可以取代option的selected属性, 非受控组件可以使用defaultValue属性,
-```
-<select value="B">
-  <option value="A">Apple</option>
-  <option value="B">Banana</option>
-  <option value="C">Cranberry</option>
-</select>
-```
-可以通过使用multiple和给value传递一个数组实现选中多个
+
+    在React中, select的value属性可以取代option的selected属性, 非受控组件可以使用defaultValue属性,
+    ```
+    <select value="B">
+    <option value="A">Apple</option>
+    <option value="B">Banana</option>
+    <option value="C">Cranberry</option>
+    </select>
+    ```
+    可以通过使用multiple和给value传递一个数组实现选中多个
 
 ### Lifting State Up
 有时几个组件需要把改变映射到数据上, 就推荐使用lifting共享的数据到最近的祖先, 如何实现呢, 首先, 我们有一个原则, 不修改props, 其次, 我们需要找到这几个组件最近的祖先, 数据应该被保存在祖先组件的state中, 子组件如果需要修改数据的话, 就调用祖先组件的回调函数, 就像JONP那样, 然后在祖先组件的回调函数中setState, 例如
@@ -223,7 +229,8 @@ form组件支持一些props通过用户的交互来改变
 </div>
 ```
 - 子组件如何传递数据到祖先组件
-由于子组件是input输入框, 所以监听onChange事件, 一旦数据发生改变, 就调用祖先组件的回调函数处理`e.target.vlaue`, 在祖先组件, 通过setState修改数据, 然后反应到子组件的props中
+
+    由于子组件是input输入框, 所以监听onChange事件, 一旦数据发生改变, 就调用祖先组件的回调函数处理`e.target.vlaue`, 在祖先组件, 通过setState修改数据, 然后反应到子组件的props中
 ```
 handleChange(e) {
   this.props.onChange(e.target.value);
@@ -233,9 +240,11 @@ handleChange(e) {
 ### Composition vs Inheritance
 React中达到代码的复用最好通过Composition而不是Inheritance
 - 基本思想
-关键在于React中的props, React的组件是接受任意的props, 包括原始类型的值, ReactElement, function, 所以, 在React基本没有用到继承的场景, 都可以通过构造组件来实现
+
+    关键在于React中的props, React的组件是接受任意的props, 包括原始类型的值, ReactElement, function, 所以, 在React基本没有用到继承的场景, 都可以通过构造组件来实现
 - props.children
-表示的是组件插入的后代, 是一个数组, 所以可以`{ props.children }`就可以被React自动展开
+
+    表示的是组件插入的后代, 是一个数组, 所以可以`{ props.children }`就可以被React自动展开
 ```
 function FancyBorder(props) {
   return (
@@ -290,22 +299,27 @@ ReactDOM.render(
 从构建一个应用来感受React的思想, 一开始提供的只是设计图和JSON数据的API
 
 1. 把UI分成一个个的模块
-可以把分出来的模块加上不同颜色的边框, 并且做好命名, 分模块的原则基本按照单一职责原则来, 一个模块应该只做一件事, 然后分好模块的层级
+
+    可以把分出来的模块加上不同颜色的边框, 并且做好命名, 分模块的原则基本按照单一职责原则来, 一个模块应该只做一件事, 然后分好模块的层级
 
 2. 先实现一个静态版本
-不要使用state来构建静态版本, 因为state只是需要交互的时候, 或者是在需要随时间变化的时候才使用. 构造出来的组件就只包含render方法. 在简单的项目, 可以从下往上构建, 在复杂的项目中, 可以从上往下构建
+
+    不要使用state来构建静态版本, 因为state只是需要交互的时候, 或者是在需要随时间变化的时候才使用. 构造出来的组件就只包含render方法. 在简单的项目, 可以从下往上构建, 在复杂的项目中, 可以从上往下构建
 
 3. 确定UI state变化的最小组件
-需要更新全部, 只需要更新有差异的部分, 有三个简单的原则
+
+    需要更新全部, 只需要更新有差异的部分, 有三个简单的原则
     1. 是通过props从父元素传递的吗, 是的话就不需要state
     2. 随时间变化的吗, 不是的话就不需要state
     3. 可以基于组件的state或者props计算出来吗, 是的话就不需要state
 
 4. 确定state存在哪里
-一个简单的原则就是, 存在需要共用这个state的组件的最近的公共祖先元素
+
+    一个简单的原则就是, 存在需要共用这个state的组件的最近的公共祖先元素
 
 5. 添加反向数据流
-子组件引起state的变化, 具体实现是调用保存state组件的回调函数
+
+    子组件引起state的变化, 具体实现是调用保存state组件的回调函数
 
 ## ADVANCED GUIDES
 ### Specifying The React Element Type
