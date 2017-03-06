@@ -338,6 +338,7 @@ React中达到代码的复用最好通过Composition而不是Inheritance
 ### Specifying The React Element Type
 1. React element编译后会直接引用已经命名后的变量，例如使用JSX<Foo />表达式，Foo必须在作用域当中
 2. 因为JSX被编译成React.createElement，所以使用JSX必须引用React
+
 #### Using Dot Notation for JSX Type
 1. 可以在JSX中使用点操作符引用React component，这样做是方便一个单一模块可以export多个React components
 
