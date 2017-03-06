@@ -340,6 +340,7 @@ React中达到代码的复用最好通过Composition而不是Inheritance
 2. 因为JSX被编译成React.createElement，所以使用JSX必须引用React
 #### Using Dot Notation for JSX Type
 1. 可以在JSX中使用点操作符引用React component，这样做是方便一个单一模块可以export多个React components
+
     ```
     import React from 'react';
     const MyComponents = {
@@ -352,9 +353,11 @@ React中达到代码的复用最好通过Composition而不是Inheritance
     }
     ```
 #### User-Defined Components Must Be Capitalized
-1. 自定义组件以大写字母开头，小写字母开头会使用内建组件，例如<div>、<span>，编译后会以字符串'div'、'span'传递到React.createElement
+1. 自定义组件以大写字母开头，小写字母开头会使用内建组件，例如`<div>`、`<span>`，编译后会以字符串'div'、'span'传递到React.createElement
+
 #### Choosing the Type at Runtime 
 1. 不能使用表达式作为React element类型，如果想要使用表达式指定element类型，必须先赋给一个大写的变量，实际运用中可以根据props渲染不同的组件
+
     ```
     // wrong!!
     const components = {
@@ -377,6 +380,7 @@ React中达到代码的复用最好通过Composition而不是Inheritance
     return <SpecificStory story={props.story} />;
     }
     ```
+
 ### Props in JSX
 在JSX有几种不同的方式指定props
 1. JavaScript Expressions
@@ -418,6 +422,7 @@ React中达到代码的复用最好通过Composition而不是Inheritance
     }
     ```
     如果多个组件需要同样的props容器，可以使用`...`spread操作符传递同样的props，但是有可能传递一些不相干的属性，所以需要根据实际情况来使用
+
 ### Children in JSX
 JSX表达式包含一个开标签和闭标签，这些标签的内容被传递到特殊的props，`props.children`
 
@@ -444,6 +449,7 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     }
     ```
 5. Booleans, Null, and Undefined Are Ignored 
+
     ```
     // 一样的结果
     <div />
@@ -455,6 +461,7 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     ```
     1. Booleans可以条件渲染React elements，
     2. 但是falsy的值仍然会被渲染出来而不是转换成false，例如0
+
         ```
         // wrong
         <div>
