@@ -353,6 +353,7 @@ React中达到代码的复用最好通过Composition而不是Inheritance
     return <MyComponents.DatePicker color="blue" />;
     }
     ```
+
 #### User-Defined Components Must Be Capitalized
 1. 自定义组件以大写字母开头，小写字母开头会使用内建组件，例如`<div>`、`<span>`，编译后会以字符串'div'、'span'传递到React.createElement
 
