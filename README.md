@@ -488,3 +488,26 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
         }
         </div>
         ```
+
+### Typechecking With PropTypes
+1. 出于性能考虑，`propTypes`只在开发模式下检查类型
+2. 可以通过`React.PropTypes.element`来指定只有一个child
+
+    ```
+    class MyComponent extends React.Component {
+    render() {
+        // This must be exactly one element or it will warn.
+        const children = this.props.children;
+        return (
+        <div>
+            {children}
+        </div>
+        );
+    }
+    }
+    MyComponent.propTypes = {
+    children: React.PropTypes.element.isRequired
+    };
+    ```
+3. 类型检查也可以用在`defaultProps`中，`defautProps`会在类型检查之前设置
+4. 没有写`isRequire`，表示的是可以这个prop可以没有，但是一旦设置，就必须满足类型检查
