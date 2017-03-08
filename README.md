@@ -560,3 +560,32 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     ```
 
 ### Uncontrolled Components
+1. 大多数情况下，推荐使用受控组件来实现表单，在受控组件中，表单数据被React组件处理，而在非受控组件中，数据由DOM元素自己处理
+2. 非受控组件一般不需要event来监听数据的改变，而是和ref搭配起来用，然后直接拿到input的value
+
+    ```
+    class NameForm extends React.Component {
+        constructor(props) {
+            super(props);
+            this.handleSubmit = this.handleSubmit.bind(this);
+        }
+        handleSubmit(event) {
+            alert('A name was submitted: ' + this.input.value);
+            event.preventDefault();
+        }
+        render() {
+            return (
+            <form onSubmit={this.handleSubmit}>
+                <label>
+                Name:
+                <input type="text" ref={(input) => this.input = input} />
+                </label>
+                <input type="submit" value="Submit" />
+            </form>
+            );
+        }
+    }
+    ```
+3. 在React渲染的生命周期中，form元素的value会覆盖DOM元素的value
+4. 一般不受控组件可以和defaultValue组合使用
+5. `<input type="checkbox">` 和 `<input type="radio">` 支持`defaultChecked`， `<select>`支持`defaultValue`
