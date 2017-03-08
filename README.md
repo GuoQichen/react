@@ -511,3 +511,52 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     ```
 3. 类型检查也可以用在`defaultProps`中，`defautProps`会在类型检查之前设置
 4. 没有写`isRequire`，表示的是可以这个prop可以没有，但是一旦设置，就必须满足类型检查
+
+### Refs and the DOM
+1. 什么时候使用Refs，能使用声明式变量来控制的就不需要使用Refs
+
+    - 管理focus，文字选中，媒体回放
+    - 触发必要的动画
+    - 和第三方DOM库整合
+2. ref的callback会在组件mount和unmount之后立即执行
+
+    - 在组件mount之后执行callback的时候，参数是DOM元素
+    - 在组件unmount之后执行callback的时候，参数是null
+3. 直接把DOM元素挂在class上是使用DOM元素常用的方式，也是推荐的方式`ref={input => this.input = input }`
+4. ref可以attach到任何元素上，包括自定义的元素
+
+    - 如果自定义元素是使用class的方式定义的，那么callback中的参数就是自定义组件的instance，就是class的instance
+    - 如果自定义元素是使用functional的方式定义的，返回的就是null，也就是说，**不能在使用function定义的自定义元素上使用ref**，因为没有instance，
+    - 在function的自定义组件中是可以使用ref的，`ref={input => textInput = input}`， 赋给一个声明过的变量就可以
+
+        ```
+        function CustomTextInput(props) {
+            // textInput must be declared here so the ref callback can refer to it
+            let textInput = null;
+            function handleClick() {
+                textInput.focus();
+            }
+            return (
+                <div>
+                <input
+                    type="text"
+                    ref={(input) => { textInput = input; }} />
+                <input
+                    type="button"
+                    value="Focus the text input"
+                    onClick={handleClick}
+                />
+                </div>
+            );  
+        }
+        ```
+5. 使用字符串声明ref的方式已经弃用了
+
+    ```
+    // 字符串声明
+    ref = "textInput"
+    // 使用this.refs调用
+    this.refs.textInput
+    ```
+
+### Uncontrolled Components
