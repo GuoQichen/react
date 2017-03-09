@@ -589,3 +589,103 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
 3. 在React渲染的生命周期中，form元素的value会覆盖DOM元素的value
 4. 一般不受控组件可以和defaultValue组合使用
 5. `<input type="checkbox">` 和 `<input type="radio">` 支持`defaultChecked`， `<select>`支持`defaultValue`
+
+### Optimizing Performance
+1. 使用生产环境构建，在使用webpack的情况下使用uglify插件
+
+    ```
+    new webpack.DefinePlugin({
+    'process.env': {
+        NODE_ENV: JSON.stringify('production')
+    }
+    }),
+    new webpack.optimize.UglifyJsPlugin()
+    ```
+2. 使用chrome timeline做组件的的性能分析，可以看到组件的mount，update，unmount，性能分析出来的数字是相对的，在生产环境中性能可能会更优越，性能分析的意义在于，能够看到在update的过程中哪些组件update了，是否有不需要update的组件update，同时也能看到组件update的频率
+3. Avoid Reconciliation
+
+    React在内部构建和维护渲染后的UI的表示，它包括你的组件返回的React组件，这个表现让React避免创建DOM节点和对DOM节点不必要的访问，操作DOM比操作javascript对象慢得多，有时它称为虚拟DOM，但是和React Native的工作方式一样，当一个组件props和state改变的时候，React通过比较最新返回的element和之前的element来决定有没有必要升级DOM
+4. 通过shouldComponentUpdate来优化
+
+    通过手动判断，只在有变化的时候shouldComponentUpdate返回true，以下是手动操作的例子
+    ```
+    class CounterButton extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {count: 1};
+        }
+        shouldComponentUpdate(nextProps, nextState) {
+            if (this.props.color !== nextProps.color) {
+                return true;
+            }
+            if (this.state.count !== nextState.count) {
+                return true;
+            }
+            return false;
+        }
+        render() {
+            return (
+                <button
+                    color={this.props.color}
+                    onClick={() => this.setState(state => ({count: state.count + 1}))}>
+                    Count: {this.state.count}
+                </button>
+            );
+        }
+    }    
+    ```
+    当时当组件开始复杂的时候，手动去比较就显得很麻烦，所以React提供了一个helper--`React.PureComponent`，所以下面这个例子和上面的效果是一致的
+    ```
+    class CounterButton extends React.PureComponent {
+        constructor(props) {
+            super(props);
+            this.state = {count: 1};
+        }
+
+        render() {
+            return (
+            <button
+                color={this.props.color}
+                onClick={() => this.setState(state => ({count: state.count + 1}))}>
+                Count: {this.state.count}
+            </button>
+            );
+        }
+    }    
+    ```
+    `React.PureComponent`内部比较是通过`shallow comparing`来实现，即浅比较，所以只有在props和state的数据类型是原始类型的时候，`React.PureComponent`才能够正常工作，即不会发生mutate（突变）的数据才能用来比较，例如一个数组，click之后往数组push一项，这样数据就mutate了，`shallow comparing`的结果是相等的，DOM不会更新，但是实际上数据发生了改变
+5. The Power Of Not Mutating Data，所以最简单的避免上述情况是使用不会发生突变的数据结构
+
+    - 下面这个例子，通过concat，使数据的改变被识别
+
+        ```
+        handleClick() {
+            this.setState(prevState => ({
+                words: prevState.words.concat(['marklar'])
+            }));
+        }    
+        ```
+    - 使用ES6数组的Spread语法
+
+        ```
+        handleClick() {
+            this.setState(prevState => ({
+                words: [...prevState.words, 'marklar'],
+            }));
+        };        
+        ```
+    - 使用ES6的Object.assign方法
+
+        ```
+        // before
+        function updateColorMap(colormap) {
+            colormap.right = 'blue';
+        }        
+        // after 
+        function updateColorMap(colormap) {
+            return Object.assign({}, colormap, {right: 'blue'});
+        }
+        ```
+    - 使用ES6对象的Spread语法（只是提议，但是Create React App这个脚手架是可以使用的）
+6. 解决这个问题的另一个方法是`Immutable.js`
+
