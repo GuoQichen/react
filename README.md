@@ -687,5 +687,9 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
         }
         ```
     - 使用ES6对象的Spread语法（只是提议，但是Create React App这个脚手架是可以使用的）
-6. 解决这个问题的另一个方法是`Immutable.js`
+6. 解决这个问题的另一个方法是`Immutable.js`，Immutability让追踪变化的花销变得很小，每次改变总是返回改变新的对象
+    
+    - 不可变，一旦创建不可在另一个时间点改变
+    - 持久的，新的collection可以从之前的collection创建或者由于set之类的操作创建，在新的collection创建之后，旧的collection一样有效
+    - 结构分享，新的collection创建时尽可能和原始的collection保持一样的结构来减少复制提高性能
 
