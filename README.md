@@ -693,3 +693,42 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     - 持久的，新的collection可以从之前的collection创建或者由于set之类的操作创建，在新的collection创建之后，旧的collection一样有效
     - 结构分享，新的collection创建时尽可能和原始的collection保持一样的结构来减少复制提高性能
 
+### React Without ES6
+1. 不使用ES6的情况下使用`React.createClass()`
+
+    ```
+    // 使用es6
+    class Greeting extends React.Component {
+        render() {
+            return <h1>Hello, {this.props.name}</h1>;
+        }
+    }    
+    // 不使用es6
+    var Greeting = React.createClass({
+        render: function() {
+            return <h1>Hello, {this.props.name}</h1>;
+        }
+    });    
+    ```
+2. 例如`propTypes`，`defaultProps`，`Initial State`，都是直接写`createClass`函数的参数中，如
+
+    ```
+    var Greeting = React.createClass({
+        getInitialState: function() {
+            return {count: this.props.initialCount};
+        },    
+        propTypes: {
+            name: React.PropTypes.string
+        },
+        getDefaultProps: function() {
+            return {
+            name: 'Mary'
+            };
+        },
+        // ...
+    });    
+    ```
+3. 自动绑定this， 在class的写法中，回调函数我们需要`onClick={this.handler.bind(this)}`，但是在`createClass`中我们不需要手动去绑定this, `onClick={this.hander}`，虽然ES6的class在绑定this的时候多些了一些代码，但是在大型的应用中有一定的性能优势
+4. Mixins功能在ES6中不能使用，而且有许多已知的问题，只是一个遗弃的功能
+
+### 
