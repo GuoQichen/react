@@ -731,4 +731,6 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
 3. 自动绑定this， 在class的写法中，回调函数我们需要`onClick={this.handler.bind(this)}`，但是在`createClass`中我们不需要手动去绑定this, `onClick={this.hander}`，虽然ES6的class在绑定this的时候多些了一些代码，但是在大型的应用中有一定的性能优势
 4. Mixins功能在ES6中不能使用，而且有许多已知的问题，只是一个遗弃的功能
 
-### 
+### React without JSX
+1. 如果在生产环境中不想编译JSX，可以使用纯的JS语法，每一个JSX元素都是`React.createElement(component, props, ...children)`的语法糖
+2. 如果嫌`React.createElement`太长，可以使用简写`const e = React.createElement`
