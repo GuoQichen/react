@@ -734,3 +734,38 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
 ### React without JSX
 1. 如果在生产环境中不想编译JSX，可以使用纯的JS语法，每一个JSX元素都是`React.createElement(component, props, ...children)`的语法糖
 2. 如果嫌`React.createElement`太长，可以使用简写`const e = React.createElement`
+
+### Reconciliation
+#### Motivation
+1. 背景
+
+    当你使用React，某个时候你可以认为`render()`函数创建了一个`React elements`的树，在下个state或props更新时，`render()`函数将返回一个不同的`React elements`的树，React然后需要算出如何有效的根据最近的树升级UI
+2. React优化diff算法的两个假设
+
+    1. 不同类型的两个元素将产生不同的树
+    2. 开发者可以使用`key`prop来提示哪个元素在不同的renders中需要保持不变
+
+#### diff算法
+1. 当比较两颗树的时候，React首先比较两个根元素，这个行为根据根元素的不同有不同的表现
+
+    1. 不同类型的元素
+
+        只要根节点有不同类型元素，React无论何时都会重新构建新的节点树，当摧毁旧的节点树的时候，旧的DOM节点被摧毁，组件实例收到`componentWillUnmout()`，当构建新的节点树，新的DOM节点插入DOM，组件实例收到`componentWillMout()`，然后收到`componentDidMount()`，任何和老的节点树关联的状态都会丢失
+        ```
+        // A
+        <div>
+            <Counter />
+        </div>
+        // B
+        <div>
+            <Counter />
+        </div>
+        // 这个例子将摧毁A和重新挂在B到DOM上
+        ```
+    2. 同样类型地DOM元素
+
+        当比较同样类型的React元素，React查看所有的属性，保持DOM节点下一致，只更新改变的属性
+    3. 同样类型地组件元素
+
+        当一个组件更新的时候，组件实例保持一致，state通过renders来维护，React更新组件实例下的props去匹配新的元素，并且调用实例下的`componentWillReceiveProps()`和`componentWillUpdate()`，然后调用`render()`方法，然后diff算法递归新的结果和之前的结果
+1.
