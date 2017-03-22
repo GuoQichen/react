@@ -768,4 +768,27 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     3. 同样类型地组件元素
 
         当一个组件更新的时候，组件实例保持一致，state通过renders来维护，React更新组件实例下的props去匹配新的元素，并且调用实例下的`componentWillReceiveProps()`和`componentWillUpdate()`，然后调用`render()`方法，然后diff算法递归新的结果和之前的结果
-1.
+2. key
+
+    key是由开发者来指定哪些子元素不需要改变
+
+### Context
+1. 更新context
+    
+    不需要手动更新，当state或者props改变的时候`getChildContext`会被调用，为了更新context中的数据，使用`this.setState`触发内部state的更新，这将触发新的context和后代组件将收到改变
+2. 如果中间的component在`shouldComponentUpdate`返回false，那么后代组件的context将不会收到新的值
+
+### Web Component
+1. React和Web Component用来解决不同的问题，他们是互补的
+
+    - Web Component提供可复用组件的强封装
+    - React提供声明式的库保持DOM与数据同步
+
+### Higher-Order Components
+1. 高阶组件不是React提供的API，而是复用组件逻辑的高级用法，高阶组件是一种摆脱React组件化本质的模式
+2. 具体来说，高阶组件是一个函数，接受一个组件作为参数和返回一个新的组件
+
+    ```
+    const EnhancedComponent = higherOrderComponent(WrappedComponent);
+    ```
+3. 组件把props转化成UI，高阶组件把一个组件转化成另一个组件
