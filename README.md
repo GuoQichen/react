@@ -792,3 +792,73 @@ JSX表达式包含一个开标签和闭标签，这些标签的内容被传递�
     const EnhancedComponent = higherOrderComponent(WrappedComponent);
     ```
 3. 组件把props转化成UI，高阶组件把一个组件转化成另一个组件
+4. 高阶组件存在的意义，在大型应用中，抽象出同样的逻辑放在同一个地方然后在多个组件中复用
+
+    ```
+    const CommentListWithSubscription = withSubscription(
+        CommentList,
+        (DataSource) => DataSource.getComments()
+    );
+    const BlogPostWithSubscription = withSubscription(
+        BlogPost,
+        (DataSource, props) => DataSource.getBlogPost(props.id)
+    });        
+    ```
+    同样的业务逻辑，分别是获取评论列表和获取博客列表，抽象成高阶组件
+5. 高阶组件是一个纯函数，不修改输入的原始组件，而是使用container component包裹起来返回一个新的组件
+6. 高阶组件和wrapped component的关系仅仅是prop-base，就是只把数据作为props传递给wrapped component，这样做的好处是可以wrapped component定义好数据接口，那么HOC就可以随便变，HOC应该不关心数据的使用，wrapped component应该不关心数据的来源
+7. Don't Mutate the Original Component. Use Composition，这样的原因有两个
+
+    1. input componet 不能脱离 enhanced component单独使用
+    2. 一个HOC的行为可能被另一个HOC的行为覆盖
+8. 惯例：
+
+    1. 传递不相关的props到wrapped component
+    2. 最大化组合性
+
+        ```
+        const ConnectedComment = connect(commentSelector, commentActions)(Comment);
+        // 等于这样
+        const enhance = connect(commentListSelector, commentListActions);
+        const ConnectedComment = enhance(CommentList);
+        ```
+        为什么要这样做，让HOC也是可以配置可组合的，根据参数产生不同的enhance函数，推崇的方式是这样`component => component`，如果有多个enhance函数的话，不要嵌套，而是把他们使用工具compose在一起，可以使用lodash的flow或者flowRight
+        
+        ```
+        // no recommend
+        const EnhancedComponent = connect(commentSelector)(withRouter(WrappedComponent))
+        // recommend
+        // compose(f, g, h) is the same as (...args) => f(g(h(...args)))
+        const enhance = compose(
+            connect(commentSelector),
+            withRouter
+            )
+        const EnhancedComponent = enhance(WrappedComponent)
+        ```
+    3. 使用一个名字来标记这是HOC的结果，方便使用React-devtool调试
+9. 警告：
+
+    1. 不要在render方法中使用HOC，因为会导致每次生成新的组件，每次都会更新整颗DOM树。建议在组件声明外使用HOC，保证结果的组件只被创建一次
+    2. 把静态方法复制到HOC产生的新的组件，
+
+        1. 可以使用`hoist-non-react-statics`方法
+            ```
+            import hoistNonReactStatic from 'hoist-non-react-statics';
+            function enhance(WrappedComponent) {
+                class Enhance extends React.Component {/*...*/}
+                hoistNonReactStatic(Enhance, WrappedComponent);
+                return Enhance;
+            }
+            ```
+        2. 提取静态方法从组件分离
+
+            ```
+            // Instead of...
+            MyComponent.someFunction = someFunction;
+            export default MyComponent;
+            // ...export the method separately...
+            export { someFunction };
+            // ...and in the consuming module, import both
+            import MyComponent, { someFunction } from './MyComponent.js';            
+            ```
+        3. ref无法传递到wrapped component，因为ref不是props，而是react特殊处理的，使用ref传递的话，引用到的不是wrapped component，而是container component
