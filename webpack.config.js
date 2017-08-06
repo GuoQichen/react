@@ -1,17 +1,28 @@
-var path = require('path');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    entry: './entry.js',
+    entry: './src/entry.js',
     output: {
         path: path.join(__dirname, '/dist'),
-        filename: 'bundle.js'
+        filename: '[name].js',
     },
+    devtool: "#source-map",
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['.js', '.jsx']
     },
     module: {
-        loaders: [
-            { test: /\.js|jsx$/, loaders: ['babel'] }
+        rules: [
+            {
+                test: /\.jsx?$/,
+                include: [
+                    path.resolve(__dirname, 'src')
+                ],
+                loader: 'babel-loader'
+            }
         ]
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin()
+    ]
 }
