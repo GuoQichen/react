@@ -27,7 +27,7 @@ class App extends Component {
         this.setState({
             inputValue: value
         })
-        console.log(value)
+        // console.log(value)
     }
 
     handleClick = () => {
