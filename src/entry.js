@@ -1,39 +1,86 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Provider, connect } from './react-redux'
-import { createStore, applyMiddleware } from 'redux'
-import logger from 'redux-logger'
-import {
-    throttle,
-    debounce
-} from 'lodash'
+
+const apiCall = async (amount = 1) => {
+    const since = Math.floor(Math.random()*1000)
+    return await fetch(`https://api.github.com/users?since=${since}`)
+        .then(response => response.json())
+        .then((result = []) => result.slice(0, amount))
+        .catch(err => console.log(err))
+}
 
 class App extends Component {
     state = {
-        inputValue: ''
+        userList: []
+    }
+
+    componentDidMount() {
+        this.getUsers()
     }
 
     render() {
+        const {
+            userList
+        } = this.state
         return (
             <div>
-                <input type="text" value={this.state.inputValue} onChange={throttle(this.handleChange, 1000)}/>
-                <button onClick={this.handleClick}>clear</button>
+                <header style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                }}>
+                    <h2 style={{
+                        marginRight: 10
+                    }}>
+                        Who To Follow
+                    </h2>
+                    <a href="#" className="btn-refresh" onClick={this.getUsers}>Refresh</a>
+                </header>
+                {
+                    userList.map((user, index) => (
+                        <div key={user.id} className="user-item" style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            marginBottom: 10,
+                        }}>
+                            <img 
+                                src={user.avatar_url} 
+                                alt="avatar"
+                                style={{
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: '50%',
+                                    marginRight: 10,
+                                }}
+                            />
+                            <a href={user.url} style={{
+                                marginRight: 10
+                            }}>{user.login}</a>
+                            <a href="#" className="btn-remvoe" onClick={this.removeUser.bind(this, index)}>x</a>
+                        </div>
+                    ))
+                }
             </div>
         )
     }
 
-    handleChange = (e) => {
-        const value = e.target.value
-        this.setState({
-            inputValue: value
-        })
-        // console.log(value)
+    getUsers = () => {
+        apiCall(3)
+            .then((result) => {
+                this.setState({
+                    userList: result
+                })
+            })
     }
 
-    handleClick = () => {
-        this.setState({
-            inputValue: ''
-        })
+    async removeUser(index) {
+        const [ newUser ] = await apiCall(1)
+        this.setState(({ userList }) => ({
+            userList: userList.map((user, _index) =>
+                _index === index 
+                ? newUser
+                : user
+            )
+        }))
     }
 }
 
