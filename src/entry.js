@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import Debounce from './debounce.js'
 
 const apiCall = async (amount = 1) => {
     const since = Math.floor(Math.random()*1000)
@@ -33,7 +34,7 @@ class App extends Component {
                     }}>
                         Who To Follow
                     </h2>
-                    <a href="#" className="btn-refresh" onClick={this.getUsers}>Refresh</a>
+                    <a href="#" className="btn-refresh" onClick={this.getUsers.bind(this)}>Refresh</a>
                 </header>
                 {
                     userList.map((user, index) => (
@@ -52,7 +53,7 @@ class App extends Component {
                                     marginRight: 10,
                                 }}
                             />
-                            <a href={user.url} style={{
+                            <a href={user.html_url} style={{
                                 marginRight: 10
                             }}>{user.login}</a>
                             <a href="#" className="btn-remvoe" onClick={this.removeUser.bind(this, index)}>x</a>
@@ -63,13 +64,11 @@ class App extends Component {
         )
     }
 
-    getUsers = () => {
-        apiCall(3)
-            .then((result) => {
-                this.setState({
-                    userList: result
-                })
-            })
+    async getUsers() {
+        const newUsers = await apiCall(3)
+        this.setState({
+            userList: newUsers
+        })
     }
 
     async removeUser(index) {
@@ -85,8 +84,8 @@ class App extends Component {
 }
 
 
-
 ReactDOM.render(
+    // <Debounce />,
     <App />,
     document.body
 );
